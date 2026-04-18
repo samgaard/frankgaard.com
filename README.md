@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# frankgaard.com
 
-## Getting Started
+Portfolio and blog for Minneapolis artist Frank Gaard. Rebuilt from Drupal 8 on GoDaddy.
 
-First, run the development server:
+## Stack
+
+- **Framework:** Next.js 15 (App Router, TypeScript)
+- **Styling:** Tailwind CSS v4 + shadcn/ui
+- **Database:** Supabase (Postgres) via Drizzle ORM
+- **Image storage:** Cloudflare R2
+- **Auth:** iron-session (single admin user)
+- **Hosting:** Vercel
+- **Package manager:** pnpm
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+cp .env.local.example .env.local
+# fill in .env.local values
+pnpm db:migrate
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Variable | Description |
+|---|---|
+| `DATABASE_URL` | Supabase connection string (use Transaction Pooler, port 6543) |
+| `SESSION_SECRET` | 32-char random string — `openssl rand -base64 32` |
+| `ADMIN_EMAIL` | Admin login email |
+| `ADMIN_PASSWORD` | Admin login password |
+| `R2_ACCOUNT_ID` | Cloudflare account ID |
+| `R2_ACCESS_KEY_ID` | R2 API key |
+| `R2_SECRET_ACCESS_KEY` | R2 API secret |
+| `R2_BUCKET_NAME` | R2 bucket name |
+| `R2_PUBLIC_URL` | Public base URL for R2 images |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Database commands
 
-## Learn More
+```bash
+pnpm db:generate   # generate migration SQL from schema changes
+pnpm db:migrate    # apply migrations to DB
+pnpm db:studio     # open Drizzle Studio (visual DB browser)
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Project structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/
+  app/
+    (public)/         # public-facing routes
+      page.tsx        # homepage — carousel + gallery preview + recent posts
+      gallery/        # /gallery — artwork by category
+      blog/           # /blog — post index
+        [slug]/       # /blog/[slug] — individual post
+    admin/
+      login/          # /admin/login
+      (protected)/    # auth-guarded admin pages
+        artwork/      # manage artwork
+        posts/        # manage blog posts
+    api/
+      auth/           # login / logout
+      admin/          # artwork + post CRUD
+  components/
+    ui/               # shadcn components
+    admin/            # admin-only form components
+  db/
+    schema.ts         # Drizzle schema
+    index.ts          # DB client
+  lib/
+    auth.ts           # iron-session config
+    r2.ts             # Cloudflare R2 upload helper
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Content
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **385 artworks** across 4 categories: Portraits, Pictures, Installations, Notebooks
+- **227 blog posts** migrated from Drupal 8
+- All images stored on Cloudflare R2
