@@ -1,6 +1,6 @@
 # frankgaard.com
 
-Portfolio and blog for Minneapolis artist Frank Gaard. Rebuilt from Drupal 8 on GoDaddy.
+Portfolio and blog for Minneapolis artist Frank Gaard.
 
 ## Stack
 
@@ -73,8 +73,3 @@ src/
     r2.ts             # Cloudflare R2 upload helper
 ```
 
-## Content
-
-- **385 artworks** across 4 categories: Portraits, Pictures, Installations, Notebooks
-- **227 blog posts** migrated from Drupal 8
-- All images stored on Cloudflare R2
