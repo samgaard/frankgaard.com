@@ -9,7 +9,7 @@ import type { InferSelectModel } from 'drizzle-orm'
 
 type Artwork = InferSelectModel<typeof artworks>
 
-export function ArtworkDialog({ artwork, className }: { artwork: Artwork; className?: string }) {
+export function ArtworkDialog({ artwork, className, priority }: { artwork: Artwork; className?: string; priority?: boolean }) {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -23,15 +23,19 @@ export function ArtworkDialog({ artwork, className }: { artwork: Artwork; classN
     <>
       <button
         onClick={() => setOpen(true)}
-        className={className ?? "aspect-square relative overflow-hidden rounded-md bg-muted cursor-pointer block w-full"}
+        className={`group ${className ?? "aspect-square relative overflow-hidden rounded-md bg-muted cursor-pointer block w-full"}`}
       >
         <Image
           src={artwork.imageUrl}
           alt={artwork.altText ?? artwork.title}
           fill
-          className="object-cover hover:scale-105 transition-transform duration-300"
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
           sizes="(max-width: 768px) 50vw, 25vw"
+          priority={priority}
         />
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+          <p className="text-white text-xs font-medium leading-tight line-clamp-2">{artwork.title}</p>
+        </div>
       </button>
 
       {open && createPortal(
@@ -59,7 +63,8 @@ export function ArtworkDialog({ artwork, className }: { artwork: Artwork; classN
               sizes="100vw"
             />
             {(artwork.title || artwork.description) && (
-              <div className="absolute bottom-0 left-0 right-0 px-6 py-4 bg-black/60 text-white">
+              <div className="absolute bottom-0 left-0 right-0 px-6 py-4 bg-black/60 text-white flex justify-center">
+              <div className="w-full max-w-xl">
                 <p className="font-medium text-sm">{artwork.title}</p>
                 {artwork.description && (
                   <div
@@ -68,6 +73,7 @@ export function ArtworkDialog({ artwork, className }: { artwork: Artwork; classN
                   />
                 )}
               </div>
+            </div>
             )}
           </div>
         </div>,
