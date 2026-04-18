@@ -10,7 +10,7 @@ export async function SiteHeader() {
     <header className="border-b">
       <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
         <Link href="/" className="font-semibold tracking-tight text-lg">
-          Frank Gaard
+          {process.env.NEXT_PUBLIC_SITE_NAME ?? 'Gallery'}
         </Link>
         <nav className="flex items-center gap-6 text-sm">
           <Link href="/gallery" className="text-muted-foreground hover:text-foreground transition-colors">

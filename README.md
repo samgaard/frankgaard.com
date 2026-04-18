@@ -1,6 +1,6 @@
 # frankgaard.com
 
-Portfolio and blog for Minneapolis artist Frank Gaard.
+A portfolio and blog site for artists. Built with Next.js, Tailwind, Supabase, and Cloudflare R2.
 
 ## Stack
 
