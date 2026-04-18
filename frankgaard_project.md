@@ -122,18 +122,18 @@ JOIN drup_taxonomy_term_field_data t ON t.tid = g.field_gallery_target_id GROUP 
 ---
 
 ### Phase 1 — Build
-- [ ] Scaffold Next.js project (TypeScript, Tailwind, shadcn)
-- [ ] Set up Postgres database (Neon or Supabase)
+- [x] Scaffold Next.js project (TypeScript, Tailwind, shadcn) — Next.js 15, pnpm, shadcn New York style
+- [x] Set up Postgres database (Supabase local via Docker — cloud setup deferred to Phase 3)
 - [ ] Set up Cloudflare R2 bucket
-- [ ] Define schema — Artwork and Post models
-- [ ] Build public gallery index page (SSG)
-- [ ] Build public gallery detail page (SSG)
-- [ ] Build public blog index page (SSG)
-- [ ] Build public blog post page (SSG)
-- [ ] Build admin auth (simple — single user)
-- [ ] Build admin: upload artwork form
-- [ ] Build admin: write blog post form
-- [ ] Build admin: edit/delete for both
+- [x] Define schema — Artwork and Post models — `src/db/schema.ts`
+- [x] Build public gallery index page — `/gallery`, category filter, lightbox
+- [ ] Build public gallery detail page (SSG) — covered by lightbox, may not need separate page
+- [x] Build public blog index page — `/blog`
+- [x] Build public blog post page — `/blog/[slug]`
+- [x] Build admin auth (simple — single user, iron-session, env-var credentials)
+- [x] Build admin: upload artwork form — `/admin/artwork/new`
+- [x] Build admin: write blog post form — `/admin/posts/new`
+- [x] Build admin: edit/delete for both
 - [ ] Test admin UI with non-technical user
 
 ---
