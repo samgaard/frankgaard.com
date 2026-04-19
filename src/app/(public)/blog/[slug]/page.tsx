@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { Lora } from 'next/font/google'
 import { db } from '@/db'
 import { posts } from '@/db/schema'
@@ -8,16 +9,57 @@ import { ImageDialog } from '@/components/image-dialog'
 import { getIronSession } from 'iron-session'
 import { cookies } from 'next/headers'
 import { sessionOptions, type SessionData } from '@/lib/auth'
+import type { Metadata } from 'next'
 
 const lora = Lora({ subsets: ['latin'], variable: '--font-lora' })
 
-export default async function BlogPostPage({
+type Props = { params: Promise<{ slug: string }> }
+
+const getPost = cache(async (slug: string) => {
+  const [post] = await db.select().from(posts).where(eq(posts.slug, slug)).limit(1)
+  return post ?? null
+})
+
+function excerpt(html: string, maxLength = 200): string {
+  const text = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+  if (text.length <= maxLength) return text
+  return text.slice(0, maxLength).replace(/\s\S*$/, '') + '…'
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const post = await getPost(slug)
+  if (!post) return {}
+
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? 'Blog'
+  const description = excerpt(post.body)
+  const image = post.images?.[0]
+
+  return {
+    title: `${post.title} — ${siteName}`,
+    description,
+    openGraph: {
+      title: post.title,
+      description,
+      siteName,
+      ...(image && { images: [{ url: image }] }),
+    },
+    twitter: {
+      card: image ? 'summary_large_image' : 'summary',
+      title: post.title,
+      description,
+      ...(image && { images: [image] }),
+    },
+  }
+}
+
+export default async function BlogPostPage({ params }: Props) {
   params,
 }: {
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const [post] = await db.select().from(posts).where(eq(posts.slug, slug)).limit(1)
+  const post = await getPost(slug)
 
   if (!post) notFound()
 

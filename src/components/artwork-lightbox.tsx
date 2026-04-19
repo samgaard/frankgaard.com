@@ -36,6 +36,7 @@ export function ArtworkLightbox({
   const isFirstRender = useRef(true)
 
   useEffect(() => {
+    setShowInfo(true)
     if (!getArtworkUrl) return
     const url = getArtworkUrl(artworks[index].id)
     if (isFirstRender.current) {
