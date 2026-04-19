@@ -54,10 +54,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function BlogPostPage({ params }: Props) {
-  params,
-}: {
-  params: Promise<{ slug: string }>
-}) {
   const { slug } = await params
   const post = await getPost(slug)
 
