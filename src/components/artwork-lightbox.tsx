@@ -1,9 +1,9 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { XIcon, ChevronLeftIcon, ChevronRightIcon, LoaderCircleIcon } from 'lucide-react'
+import { XIcon, ChevronLeftIcon, ChevronRightIcon, LoaderCircleIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
 import type { artworks } from '@/db/schema'
 import type { InferSelectModel } from 'drizzle-orm'
 
@@ -31,6 +31,7 @@ export function ArtworkLightbox({
   const artwork = artworks[index]
   const hasPrev = index > 0
   const hasNext = index < artworks.length - 1
+  const [showInfo, setShowInfo] = useState(true)
   const touchStartX = useRef<number | null>(null)
   const isFirstRender = useRef(true)
 
@@ -119,16 +120,31 @@ export function ArtworkLightbox({
           sizes="100vw"
         />
         {(artwork.title || artwork.description) && (
-          <div className="absolute bottom-0 left-0 right-0 px-6 py-4 bg-black/60 text-white flex justify-center">
-            <div className="w-full max-w-xl">
-              <p className="font-medium text-base">{artwork.title}</p>
-              {artwork.description && (
-                <div
-                  className="text-sm text-white/90 mt-0.5"
-                  dangerouslySetInnerHTML={{ __html: artwork.description }}
-                />
-              )}
+          <div className="absolute bottom-0 left-0 right-0 text-white">
+            <div className="flex justify-center">
+              <div className="w-full max-w-xl px-6 flex justify-end">
+                <button
+                  onClick={(e) => { e.stopPropagation(); setShowInfo(v => !v) }}
+                  className="bg-black/60 rounded-t-md px-2 py-1 text-white/70 hover:text-white transition-colors"
+                  aria-label={showInfo ? 'Hide info' : 'Show info'}
+                >
+                  {showInfo ? <ChevronDownIcon className="h-4 w-4" /> : <ChevronUpIcon className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
+            {showInfo && (
+              <div className="bg-black/60 py-4 flex justify-center">
+                <div className="w-full max-w-xl px-6">
+                  <p className="font-medium text-lg">{artwork.title}</p>
+                  {artwork.description && (
+                    <div
+                      className="text-base text-white/90 mt-1"
+                      dangerouslySetInnerHTML={{ __html: artwork.description }}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
