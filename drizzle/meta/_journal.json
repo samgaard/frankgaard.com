@@ -15,6 +15,13 @@
       "when": 1776607345759,
       "tag": "0001_tearful_jocasta",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776819976443,
+      "tag": "0002_square_rumiko_fujikawa",
+      "breakpoints": true
     }
   ]
 }

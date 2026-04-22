@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import { getSiteName } from '@/lib/settings'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -28,22 +29,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Bot check failed. Please try again.' }, { status: 400 })
   }
 
-  const to = (process.env.CONTACT_RECIPIENT_EMAIL ?? '').split(',').map((e) => e.trim()).filter(Boolean)
+  const [recipientSetting, fromSetting, bccSetting] = await Promise.all([
+    getSetting('contact_recipient_email'),
+    getSetting('contact_from_email'),
+    getSetting('contact_bcc_email'),
+  ])
+
+  const to = (recipientSetting ?? '').split(',').map((e) => e.trim()).filter(Boolean)
   if (to.length === 0) {
     return NextResponse.json({ error: 'Contact form is not configured.' }, { status: 500 })
   }
 
-  const from = process.env.CONTACT_FROM_EMAIL ?? 'onboarding@resend.dev'
-
-  const bcc = (process.env.CONTACT_BCC_EMAIL ?? '').split(',').map((e) => e.trim()).filter(Boolean)
+  const from = fromSetting ?? 'onboarding@resend.dev'
+  const bcc = (bccSetting ?? '').split(',').map((e) => e.trim()).filter(Boolean)
+  const siteName = await getSiteName()
 
   await resend.emails.send({
     from,
     to,
     ...(bcc.length > 0 && { bcc }),
     replyTo: email,
-    subject: `New message from ${process.env.NEXT_PUBLIC_SITE_NAME}${name ? ` — ${name}` : ''}`,
-    text: `You received a message from the contact form on ${process.env.NEXT_PUBLIC_SITE_NAME}.\n\n${message}\n\n---\n${name ? `${name} ` : ''}<${email}>`,
+    subject: `New message from ${siteName}${name ? ` — ${name}` : ''}`,
+    text: `You received a message from the contact form on ${siteName}.\n\n${message}\n\n---\n${name ? `${name} ` : ''}<${email}>`,
   })
 
   return NextResponse.json({ ok: true })

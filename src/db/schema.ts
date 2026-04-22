@@ -1,5 +1,10 @@
 import { pgTable, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core'
 
+export const settings = pgTable('settings', {
+  key: varchar('key', { length: 255 }).primaryKey(),
+  value: text('value'),
+})
+
 export const artworks = pgTable('artworks', {
   id: serial('id').primaryKey(),
   title: varchar('title', { length: 255 }).notNull(),

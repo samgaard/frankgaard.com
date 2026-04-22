@@ -6,6 +6,7 @@ import { db } from '@/db'
 import { artworks } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { ArtworkZoom } from '@/components/artwork-zoom'
+import { getSiteName } from '@/lib/settings'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const artwork = await getArtwork(slug)
   if (!artwork) return {}
 
-  const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? 'Gallery'
+  const siteName = await getSiteName()
   const description = artwork.description
     ? artwork.description.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200)
     : (artwork.altText ?? artwork.title)

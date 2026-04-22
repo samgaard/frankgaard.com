@@ -37,7 +37,6 @@ pnpm dev
 
 | Variable | Description |
 |---|---|
-| `NEXT_PUBLIC_SITE_NAME` | Display name shown in the site header and page title |
 | `DATABASE_URL` | Supabase connection string (use Transaction Pooler, port 6543) |
 | `SESSION_SECRET` | 32-char random string — `openssl rand -base64 32` |
 | `ADMIN_EMAIL` | Admin login email |
@@ -50,9 +49,6 @@ pnpm dev
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Cloudflare Turnstile site key (public) |
 | `TURNSTILE_SECRET_KEY` | Cloudflare Turnstile secret key |
 | `RESEND_API_KEY` | Resend API key |
-| `CONTACT_RECIPIENT_EMAIL` | Comma-separated recipient address(es) for contact form |
-| `CONTACT_FROM_EMAIL` | Sender address — `onboarding@resend.dev` for dev/preview, `contact@yourdomain.com` for production (requires Resend domain verification) |
-| `CONTACT_BCC_EMAIL` | Optional BCC address(es) for monitoring — invisible to sender |
 
 ## Database commands
 

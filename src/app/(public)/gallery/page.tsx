@@ -5,12 +5,14 @@ import { artworks } from '@/db/schema'
 import { eq, count, desc } from 'drizzle-orm'
 import { GalleryGrid } from '@/components/gallery-grid'
 import { GalleryFilters } from '@/components/gallery-filters'
+import { getSiteName } from '@/lib/settings'
 
-export const metadata: Metadata = {
-  title: `Gallery — ${process.env.NEXT_PUBLIC_SITE_NAME ?? ''}`.replace(/ — $/, ''),
-  openGraph: {
-    siteName: process.env.NEXT_PUBLIC_SITE_NAME,
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const siteName = await getSiteName()
+  return {
+    title: `Gallery — ${siteName}`,
+    openGraph: { siteName },
+  }
 }
 
 const CATEGORIES = ['Portraits', 'Pictures', 'Installations', 'Notebooks'] as const

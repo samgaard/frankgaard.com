@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { getSiteName } from '@/lib/settings'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,10 +13,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: process.env.NEXT_PUBLIC_SITE_NAME ?? 'Gallery',
-  description: `Portfolio and blog for ${process.env.NEXT_PUBLIC_SITE_NAME ?? 'Gallery'}`,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const siteName = await getSiteName()
+  return {
+    title: siteName,
+    description: `Portfolio and blog for ${siteName}`,
+  }
+}
 
 export default function RootLayout({
   children,

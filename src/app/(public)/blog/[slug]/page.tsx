@@ -10,6 +10,7 @@ import { getIronSession } from 'iron-session'
 import { cookies } from 'next/headers'
 import { sessionOptions, type SessionData } from '@/lib/auth'
 import type { Metadata } from 'next'
+import { getSiteName } from '@/lib/settings'
 
 const lora = Lora({ subsets: ['latin'], variable: '--font-lora' })
 
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await getPost(slug)
   if (!post) return {}
 
-  const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? 'Blog'
+  const siteName = await getSiteName()
   const description = excerpt(post.body)
   const image = post.images?.[0]
 
