@@ -45,7 +45,6 @@ yarn-error.log*
 # claude code — local maintenance files, not for public repo
 .claude/
 CLAUDE.md
-frankgaard_project.md
 .mcp.json
 AGENTS.md
 setup-questions.md
