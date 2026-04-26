@@ -41,6 +41,8 @@ yarn-error.log*
 /.playwright-mcp/
 *.png
 *.jpg
+!src/app/icon.png
+!src/app/apple-icon.png
 
 # claude code — local maintenance files, not for public repo
 .claude/
