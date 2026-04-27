@@ -44,6 +44,7 @@ yarn-error.log*
 !src/app/icon.png
 !src/app/apple-icon.png
 !src/app/opengraph-image.png
+!public/swan.png
 
 # claude code — local maintenance files, not for public repo
 .claude/
