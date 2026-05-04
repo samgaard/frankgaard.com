@@ -45,6 +45,7 @@ export function PostEditForm({ post }: { post: Post }) {
   }
 
   function removeKeep(url: string) {
+    if (!window.confirm('Remove this image from the post? This will take effect when you save.')) return
     setKeepImages(prev => prev.filter(u => u !== url))
   }
 
