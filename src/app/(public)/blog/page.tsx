@@ -6,14 +6,9 @@ import { getIronSession } from 'iron-session'
 import { cookies } from 'next/headers'
 import { sessionOptions, type SessionData } from '@/lib/auth'
 import { buttonVariants } from '@/components/ui/button'
+import { PostPreview } from '@/components/post-preview'
 
 const PER_PAGE = 20
-
-function excerpt(html: string, maxLength = 160): string {
-  const text = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
-  if (text.length <= maxLength) return text
-  return text.slice(0, maxLength).replace(/\s\S*$/, '') + '…'
-}
 
 function pageHref(p: number) {
   return p === 1 ? '/blog' : `/blog?page=${p}`
@@ -52,28 +47,24 @@ export default async function BlogPage({
   const totalPages = Math.ceil(total / PER_PAGE)
 
   return (
-    <div className="space-y-8 max-w-2xl">
-      {isLoggedIn && (
-        <Link href="/admin/posts/new" className={buttonVariants()}>+ New post</Link>
-      )}
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <h1 className="font-semibold text-2xl">Latest blog posts</h1>
+          {isLoggedIn && (
+            <Link href="/admin/posts/new" className={buttonVariants({ size: 'sm' })}>+ New post</Link>
+          )}
+        </div>
+        <a href="/blog/rss.xml" className="text-muted-foreground hover:text-foreground transition-colors" title="RSS feed">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/></svg>
+        </a>
+      </div>
       {pagePosts.length === 0 && (
         <p className="text-muted-foreground text-sm">No posts yet.</p>
       )}
       <div className="space-y-6">
         {pagePosts.map((post) => (
-          <article key={post.id}>
-            <Link href={`/blog/${post.slug}`} className="group block space-y-1">
-              <p className="text-xs text-muted-foreground">
-                {new Date(post.createdAt).toLocaleDateString('en-US', {
-                  month: 'numeric',
-                  day: 'numeric',
-                  year: '2-digit',
-                })}
-              </p>
-              <h2 className="font-semibold text-lg group-hover:underline">{post.title}</h2>
-              <p className="text-base text-foreground">{excerpt(post.body)}</p>
-            </Link>
-          </article>
+          <PostPreview key={post.id} post={post} />
         ))}
       </div>
 
