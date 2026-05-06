@@ -24,7 +24,7 @@ export default async function AdminArtworkPage() {
         {items.map((artwork) => (
           <div key={artwork.id} className="flex items-center gap-4 border rounded-lg p-3">
             <div className="relative w-12 h-12 shrink-0 rounded overflow-hidden bg-muted">
-              <Image src={artwork.imageUrl} alt={artwork.title} fill className="object-cover" unoptimized />
+              <Image src={artwork.imageUrl} alt={artwork.title} fill className="object-cover" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-medium text-sm truncate">{artwork.title}</p>

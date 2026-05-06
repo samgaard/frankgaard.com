@@ -2,9 +2,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { db } from '@/db'
 import { posts } from '@/db/schema'
-import { desc } from 'drizzle-orm'
+import { desc, count } from 'drizzle-orm'
 import { buttonVariants } from '@/components/ui/button'
 import { DeleteButton } from '@/components/admin/delete-button'
+
+const PER_PAGE = 30
 
 function excerpt(html: string, maxLength = 160): string {
   const text = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
@@ -12,13 +14,26 @@ function excerpt(html: string, maxLength = 160): string {
   return text.slice(0, maxLength).replace(/\s\S*$/, '') + '…'
 }
 
-export default async function AdminPostsPage() {
-  const items = await db.select().from(posts).orderBy(desc(posts.createdAt))
+export default async function AdminPostsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>
+}) {
+  const { page } = await searchParams
+  const currentPage = Math.max(1, parseInt(page ?? '1', 10))
+  const offset = (currentPage - 1) * PER_PAGE
+
+  const [[{ total }], items] = await Promise.all([
+    db.select({ total: count() }).from(posts),
+    db.select().from(posts).orderBy(desc(posts.createdAt)).limit(PER_PAGE).offset(offset),
+  ])
+
+  const totalPages = Math.ceil(total / PER_PAGE)
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="font-semibold text-2xl">Posts ({items.length})</h1>
+        <h1 className="font-semibold text-2xl">Posts ({total})</h1>
         <Link href="/admin/posts/new" className={buttonVariants({ size: 'sm' })}>New post</Link>
       </div>
 
@@ -43,19 +58,35 @@ export default async function AdminPostsPage() {
                 <div className="flex gap-1 mt-2 flex-wrap">
                   {post.images.map((url, i) => (
                     <div key={i} className="relative w-12 h-12 rounded overflow-hidden bg-muted shrink-0">
-                      <Image src={url} alt="" fill className="object-cover" unoptimized />
+                      <Image src={url} alt="" fill className="object-cover" />
                     </div>
                   ))}
                 </div>
               )}
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <Link href={`/admin/posts/${post.slug}/edit`} className={buttonVariants({ size: 'sm', variant: 'outline' })}>Edit</Link>
+              <Link href={`/admin/posts/${post.slug}/edit`} className={buttonVariants({ size: 'sm', variant: 'default' })}>Edit</Link>
               <DeleteButton id={post.slug} type="post" />
             </div>
           </div>
         ))}
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center gap-4">
+          {currentPage > 1 ? (
+            <Link href={`?page=${currentPage - 1}`} className={buttonVariants({ variant: 'default' })}>← Previous</Link>
+          ) : (
+            <span className={buttonVariants({ variant: 'default' }) + ' opacity-40 pointer-events-none'}>← Previous</span>
+          )}
+          <span className="text-sm text-muted-foreground">Page {currentPage} of {totalPages}</span>
+          {currentPage < totalPages ? (
+            <Link href={`?page=${currentPage + 1}`} className={buttonVariants({ variant: 'default' })}>Next →</Link>
+          ) : (
+            <span className={buttonVariants({ variant: 'default' }) + ' opacity-40 pointer-events-none'}>Next →</span>
+          )}
+        </div>
+      )}
     </div>
   )
 }
