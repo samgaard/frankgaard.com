@@ -43,7 +43,7 @@ export default async function AdminPostsPage() {
                 <div className="flex gap-1 mt-2 flex-wrap">
                   {post.images.map((url, i) => (
                     <div key={i} className="relative w-12 h-12 rounded overflow-hidden bg-muted shrink-0">
-                      <Image src={url} alt="" fill className="object-cover" />
+                      <Image src={url} alt="" fill className="object-cover" unoptimized />
                     </div>
                   ))}
                 </div>
